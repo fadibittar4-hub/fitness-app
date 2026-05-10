@@ -1,0 +1,40 @@
+:host { display: block; }
+
+.ab-page { display: grid; gap: var(--space-4); }
+
+.ab-title { margin: 0; font-family: var(--font-display); font-size: 1.4rem; }
+
+.ab-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ab-item {
+  padding: var(--space-3);
+  display: grid;
+  gap: 0.25rem;
+
+  &__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  &__name { font-size: 0.88rem; font-weight: 600; }
+  &__session { margin: 0; color: var(--color-text-secondary); font-size: var(--text-xs); }
+  &__date { margin: 0; color: var(--color-text-muted); font-size: var(--text-xs); }
+}
+
+.ab-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  flex-shrink: 0;
+
+  &--pending   { background: var(--color-status-pending-bg);   color: var(--color-status-pending);   border: 1px solid var(--color-status-pending-border); }
+  &--confirmed { background: var(--color-status-confirmed-bg); color: var(--color-status-confirmed); border: 1px solid var(--color-status-confirmed-border); }
+  &--cancelled { background: var(--color-danger-wash);         color: var(--color-danger-text);      border: 1px solid var(--color-danger-edge); }
+}
+
+.ab-state { color: var(--color-text-secondary); font-size: var(--text-sm); }
+.ab-error { color: var(--color-danger-text); font-size: var(--text-sm); }

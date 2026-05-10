@@ -1,0 +1,24 @@
+<div class="trainer-shell">
+  <nav class="trainer-shell__nav panel-glass" aria-label="Trainer navigation">
+    <!-- Brand — visible in desktop sidebar only -->
+    <div class="tn-brand">
+      <img class="tn-brand__logo" src="/branding/strynth-logo-exact.png" alt="" aria-hidden="true" />
+      <span class="tn-brand__name">STRYNTH</span>
+    </div>
+
+    <a
+      *ngFor="let item of navItems"
+      class="tn-link"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+    >
+      {{ item.label }}
+    </a>
+  </nav>
+
+  <main class="trainer-shell__content panel-base">
+    <div class="trainer-shell__inner">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

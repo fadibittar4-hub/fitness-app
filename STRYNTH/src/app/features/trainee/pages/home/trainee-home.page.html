@@ -1,0 +1,48 @@
+<section class="trainee-home">
+  <header class="th-hero">
+    <p class="th-hero__kicker">Find your coach</p>
+    <h1 class="th-hero__title">Book a trainer</h1>
+    <p class="th-hero__sub">Browse verified coaches and book your first session.</p>
+  </header>
+
+  <ui-search-bar
+    placeholder="Search by name or email"
+    [value]="searchTerm()"
+    (valueChange)="onSearchChange($event)"
+  ></ui-search-bar>
+
+  <div class="th-filters">
+    <ui-chip
+      *ngFor="let f of filters"
+      [label]="f.label"
+      [tone]="activeFilter() === f.value ? 'active' : 'default'"
+      (chipClick)="setFilter(f.value)"
+    ></ui-chip>
+  </div>
+
+  <p *ngIf="isLoading()" class="th-state">Loading trainers…</p>
+  <p *ngIf="loadError()" class="th-error">{{ loadError() }}</p>
+
+  <div *ngIf="!isLoading() && !loadError()" class="th-grid">
+    <p *ngIf="filteredTrainers().length === 0" class="th-state">No trainers found.</p>
+
+    <button
+      *ngFor="let trainer of filteredTrainers()"
+      type="button"
+      class="th-trainer-card surface-card"
+      (click)="viewTrainer(trainer.id)"
+    >
+      <div class="th-trainer-card__photo">
+        <img *ngIf="trainer.profile_image_url | mediaUrl as src" [src]="src" [alt]="trainer.first_name + ' ' + trainer.last_name" class="th-trainer-card__photo-img" />
+        <span *ngIf="!(trainer.profile_image_url | mediaUrl)" class="th-trainer-card__initials">{{ trainer.first_name[0] }}{{ trainer.last_name[0] }}</span>
+      </div>
+      <div class="th-trainer-card__body">
+        <p class="th-trainer-card__name">{{ trainer.first_name }} {{ trainer.last_name }}</p>
+        <p class="th-trainer-card__role">Personal Trainer</p>
+        <p *ngIf="trainer.specialties" class="th-trainer-card__specialties"><span class="th-trainer-card__specialties-label">Specialties: </span>{{ trainer.specialties }}</p>
+        <p *ngIf="trainer.years_experience != null" class="th-trainer-card__exp">{{ trainer.years_experience }} yrs experience</p>
+        <p class="th-trainer-card__joined">Since {{ trainer.created_at | date: 'MMM y' }}</p>
+      </div>
+    </button>
+  </div>
+</section>

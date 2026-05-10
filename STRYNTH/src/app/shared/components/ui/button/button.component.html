@@ -1,0 +1,14 @@
+<button
+  class="ui-button"
+  [attr.type]="type"
+  [disabled]="disabled"
+  [ngClass]="[
+    'ui-button--' + variant,
+    'ui-button--' + size,
+    fullWidth ? 'ui-button--full' : ''
+  ]"
+>
+  <span class="ui-button__label">
+    <ng-content>{{ label }}</ng-content>
+  </span>
+</button>

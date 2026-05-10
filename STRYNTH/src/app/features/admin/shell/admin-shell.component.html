@@ -1,0 +1,27 @@
+<div class="admin-shell">
+  <!-- Mobile top bar (brand only) -->
+  <header class="admin-shell__topbar panel-glass">
+    <div class="an-brand">STRYNTH Admin</div>
+  </header>
+
+  <!-- Sidebar (desktop) / bottom nav (mobile) -->
+  <nav class="admin-shell__nav panel-glass" aria-label="Admin navigation">
+    <!-- Brand shown only in desktop sidebar -->
+    <div class="an-brand an-brand--sidebar">STRYNTH Admin</div>
+    <!-- Links -->
+    <a
+      *ngFor="let item of navItems"
+      class="an-link"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+    >
+      {{ item.label }}
+    </a>
+  </nav>
+
+  <main class="admin-shell__content panel-base" role="main">
+    <div class="admin-shell__inner">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

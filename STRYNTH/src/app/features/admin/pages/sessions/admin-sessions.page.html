@@ -1,0 +1,85 @@
+<div class="as-page">
+  <h1 class="as-title">All Sessions</h1>
+
+  <p *ngIf="isLoading()" class="as-state">Loading…</p>
+  <p *ngIf="error()" class="as-error">{{ error() }}</p>
+  <p *ngIf="!isLoading() && sessions().length === 0" class="as-state">No sessions found.</p>
+
+  <ul *ngIf="!isLoading() && sessions().length > 0" class="as-list">
+    <li *ngFor="let s of sessions()" class="as-item panel-glass">
+
+      <!-- View mode -->
+      <ng-container *ngIf="editingId() !== s.id">
+        <div class="as-item__row">
+          <span class="as-item__trainer">{{ s.trainer_first_name }} {{ s.trainer_last_name }}</span>
+          <div class="as-item__actions">
+            <ui-button variant="primary" size="sm" (click)="startEdit(s)">Edit</ui-button>
+          </div>
+        </div>
+        <p class="as-item__time">{{ s.session_time | date: 'medium' }}</p>
+        <p class="as-item__cap">Capacity: {{ s.capacity }}</p>
+      </ng-container>
+
+      <!-- Edit mode -->
+      <ng-container *ngIf="editingId() === s.id">
+        <form #editForm="ngForm" class="as-edit-form" (ngSubmit)="saveEdit(editForm)">
+          <p class="as-edit-form__trainer">{{ s.trainer_first_name }} {{ s.trainer_last_name }}</p>
+
+          <div class="as-edit-form__field">
+            <label class="as-edit-form__label" for="editTime-{{ s.id }}">Session time</label>
+            <input
+              id="editTime-{{ s.id }}"
+              class="as-edit-form__input"
+              type="datetime-local"
+              name="editTime"
+              required
+              [ngModel]="editTime()"
+              (ngModelChange)="editTime.set($event)"
+            />
+          </div>
+
+          <div class="as-edit-form__field">
+            <label class="as-edit-form__label" for="editCap-{{ s.id }}">Capacity</label>
+            <input
+              id="editCap-{{ s.id }}"
+              class="as-edit-form__input"
+              type="number"
+              name="editCapacity"
+              min="1"
+              required
+              [ngModel]="editCapacity()"
+              (ngModelChange)="editCapacity.set($event)"
+            />
+          </div>
+
+          <div class="as-edit-form__field">
+            <label class="as-edit-form__label" for="editStatus-{{ s.id }}">Status</label>
+            <select
+              id="editStatus-{{ s.id }}"
+              class="as-edit-form__input as-edit-form__select"
+              name="editStatus"
+              required
+              [ngModel]="editStatus()"
+              (ngModelChange)="editStatus.set($event)"
+            >
+              <option value="available">available</option>
+              <option value="booked">booked</option>
+              <option value="completed">completed</option>
+              <option value="cancelled">cancelled</option>
+            </select>
+          </div>
+
+          <p *ngIf="saveError()" class="as-error">{{ saveError() }}</p>
+
+          <div class="as-edit-form__actions">
+            <ui-button type="submit" variant="primary" size="sm" [disabled]="isSaving()">
+              {{ isSaving() ? 'Saving…' : 'Save' }}
+            </ui-button>
+            <ui-button type="button" variant="secondary" size="sm" (click)="cancelEdit()">Cancel</ui-button>
+          </div>
+        </form>
+      </ng-container>
+
+    </li>
+  </ul>
+</div>

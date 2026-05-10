@@ -1,0 +1,20 @@
+<div class="ap-page">
+  <ng-container *ngIf="authService.currentUser() as user">
+    <div class="ap-hero panel-glass">
+      <ui-avatar-upload
+        class="ap-hero__avatar-upload"
+        [imageUrl]="user.profile_image_url"
+        [initials]="user.first_name[0] + user.last_name[0]"
+      />
+      <div class="ap-hero__info">
+        <h1 class="ap-hero__name">{{ user.first_name }} {{ user.last_name }}</h1>
+        <p class="ap-hero__email">{{ user.email }}</p>
+        <p class="ap-hero__role">Administrator</p>
+      </div>
+    </div>
+
+    <div class="ap-logout">
+      <button class="ap-logout-btn" type="button" (click)="logout()">Log out</button>
+    </div>
+  </ng-container>
+</div>

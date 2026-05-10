@@ -1,0 +1,10 @@
+<label class="search-bar" aria-label="Search">
+  <span class="search-bar__icon" aria-hidden="true">⌕</span>
+  <input
+    class="search-bar__input"
+    type="search"
+    [value]="value"
+    [placeholder]="placeholder"
+    (input)="onInput(($any($event.target)).value)"
+  />
+</label>
