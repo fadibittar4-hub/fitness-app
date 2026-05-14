@@ -173,32 +173,24 @@ Health     →  http://localhost:5000/health
 ### Prerequisites
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows / macOS / Linux)
-- MySQL 8 running locally with the `strynth` schema applied
 
-### 1 — Apply the database schema
+### 1 — Clone and copy the environment file
 
 ```bash
-mysql -u root -p < "STRYNTH Back-end/database/schema.mysql.sql"
+git clone https://github.com/fadibittar4-hub/fitness-app.git
+cd fitness-app
+cp .env.example .env
 ```
 
-### 2 — Create the environment file
+The `.env.example` already contains working defaults — no editing needed.
 
-Create a `.env` file in the project root:
-
-```env
-DB_HOST=host.docker.internal
-DB_PORT=3306
-DB_NAME=strynth
-DB_USER=root
-DB_PASSWORD=yourpassword
-JWT_SECRET=change_me_in_production
-```
-
-### 3 — Start the stack
+### 2 — Start the stack
 
 ```bash
 docker compose up --build -d
 ```
+
+That's it. Docker pulls MySQL 8, applies the schema automatically, builds the Angular app and the Node.js API, and starts everything.
 
 | Service | URL |
 |---------|-----|
@@ -206,7 +198,7 @@ docker compose up --build -d
 | Backend API | http://localhost:5000 |
 | Health check | http://localhost:5000/health |
 
-### 4 — Stop
+### 3 — Stop
 
 ```bash
 docker compose down
