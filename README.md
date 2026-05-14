@@ -66,6 +66,10 @@ Health     →  http://localhost:5000/health
 
 ## Screenshots & Demo
 
+### Login Page
+![Login Page](docs/screenshots/Login-Page.png)
+*Login — JWT authentication with role-based redirect*
+
 ### Trainer Dashboard
 ![Trainer Home](docs/screenshots/Trainer-Home.png)
 *Trainer home — booking stats and open sessions at a glance*
