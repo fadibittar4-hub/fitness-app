@@ -111,7 +111,7 @@ Health     →  http://localhost:5000/health
                                                        │
                                               ┌────────┴────────┐
                                               │    MySQL 8      │
-                                              │  (host machine) │
+                                              │    (Docker)     │
                                               └─────────────────┘
 ```
 
