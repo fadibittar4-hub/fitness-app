@@ -1,0 +1,11 @@
+<div class="section-title">
+  <div class="section-title__copy">
+    <p *ngIf="eyebrow" class="section-title__eyebrow">{{ eyebrow }}</p>
+    <h2 class="section-title__heading">{{ title }}</h2>
+    <p *ngIf="subtitle" class="section-title__subtitle">{{ subtitle }}</p>
+  </div>
+
+  <button *ngIf="actionLabel" type="button" class="section-title__action">
+    {{ actionLabel }}
+  </button>
+</div>

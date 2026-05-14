@@ -16,15 +16,26 @@ export const sessionRepository = {
   async findSessionById(sessionId) {
     const rows = await dbQuery(
       `
-        SELECT id, trainer_id, session_time, status, capacity, price, created_at
-        FROM sessions
-        WHERE id = ?
+        SELECT
+          s.id,
+          s.trainer_id,
+          s.session_time,
+          s.status,
+          s.capacity,
+          s.price,
+          s.created_at,
+          COUNT(b.id) AS bookings_count
+        FROM sessions s
+        LEFT JOIN bookings b ON b.session_id = s.id AND b.status = 'confirmed'
+        WHERE s.id = ?
+        GROUP BY s.id
         LIMIT 1
       `,
       [sessionId],
     );
 
-    return rows[0] || null;
+    if (!rows[0]) return null;
+    return { ...rows[0], bookings_count: Number(rows[0].bookings_count) };
   },
 
   async findSessionsByTrainerId(trainerId) {
@@ -39,10 +50,13 @@ export const sessionRepository = {
           s.price,
           s.created_at,
           u.first_name AS trainer_first_name,
-          u.last_name  AS trainer_last_name
+          u.last_name  AS trainer_last_name,
+          COUNT(b.id)  AS bookings_count
         FROM sessions s
         INNER JOIN users u ON u.id = s.trainer_id
+        LEFT JOIN bookings b ON b.session_id = s.id AND b.status = 'confirmed'
         WHERE s.trainer_id = ?
+        GROUP BY s.id
         ORDER BY s.session_time ASC
       `,
       [trainerId],
@@ -58,6 +72,7 @@ export const sessionRepository = {
       capacity: row.capacity,
       price: row.price,
       created_at: row.created_at,
+      bookings_count: Number(row.bookings_count),
     }));
   },
 
@@ -73,11 +88,14 @@ export const sessionRepository = {
           s.price,
           s.created_at,
           u.first_name AS trainer_first_name,
-          u.last_name  AS trainer_last_name
+          u.last_name  AS trainer_last_name,
+          COUNT(b.id)  AS bookings_count
         FROM sessions s
         INNER JOIN users u ON u.id = s.trainer_id
+        LEFT JOIN bookings b ON b.session_id = s.id AND b.status = 'confirmed'
         WHERE s.status = 'available'
           AND s.session_time > NOW()
+        GROUP BY s.id
         ORDER BY s.session_time ASC
       `,
     );
@@ -92,6 +110,7 @@ export const sessionRepository = {
       capacity: row.capacity,
       price: row.price,
       created_at: row.created_at,
+      bookings_count: Number(row.bookings_count),
     }));
   },
 
@@ -146,9 +165,12 @@ export const sessionRepository = {
           s.price,
           s.created_at,
           u.first_name AS trainer_first_name,
-          u.last_name  AS trainer_last_name
+          u.last_name  AS trainer_last_name,
+          COUNT(b.id)  AS bookings_count
         FROM sessions s
         INNER JOIN users u ON u.id = s.trainer_id
+        LEFT JOIN bookings b ON b.session_id = s.id AND b.status = 'confirmed'
+        GROUP BY s.id
         ORDER BY s.session_time DESC
       `,
     );
@@ -163,6 +185,7 @@ export const sessionRepository = {
       capacity: row.capacity,
       price: row.price,
       created_at: row.created_at,
+      bookings_count: Number(row.bookings_count),
     }));
   },
 };

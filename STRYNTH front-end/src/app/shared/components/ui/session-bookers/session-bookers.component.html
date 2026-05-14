@@ -1,0 +1,10 @@
+<button class="sb-toggle" (click)="toggle.emit()">
+  {{ expanded ? 'Hide bookers ▲' : 'Show bookers ▼' }}
+</button>
+
+<ul *ngIf="expanded" class="sb-list">
+  <li *ngIf="bookers.length === 0" class="sb-list__empty">No bookings yet.</li>
+  <li *ngFor="let b of bookers" class="sb-list__item">
+    {{ b.user_first_name }} {{ b.user_last_name }}
+  </li>
+</ul>

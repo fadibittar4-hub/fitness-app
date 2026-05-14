@@ -1,0 +1,106 @@
+<div class="trp-page">
+  <ng-container *ngIf="authService.currentUser() as user">
+    <!-- Hero -->
+    <div class="trp-hero panel-glass">
+      <ui-avatar-upload
+        [imageUrl]="user.profile_image_url"
+        [initials]="user.first_name[0] + user.last_name[0]"
+      />
+      <div class="trp-hero__info">
+        <h1 class="trp-hero__name">{{ user.first_name }} {{ user.last_name }}</h1>
+        <p class="trp-hero__email">{{ user.email }}</p>
+        <p class="trp-hero__role">Trainer</p>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <section class="trp-section panel-glass">
+      <h2 class="trp-section__title">Account</h2>
+      <div class="trp-field">
+        <span class="trp-field__label">Name</span>
+        <span class="trp-field__value">{{ user.first_name }} {{ user.last_name }}</span>
+      </div>
+      <div class="trp-field">
+        <span class="trp-field__label">Email</span>
+        <span class="trp-field__value">{{ user.email }}</span>
+      </div>
+      <div class="trp-field">
+        <span class="trp-field__label">Member since</span>
+        <span class="trp-field__value">{{ user.created_at | date: 'mediumDate' }}</span>
+      </div>
+    </section>
+
+    <!-- Trainer Profile -->
+    <section class="trp-section panel-glass">
+      <div class="trp-section__header">
+        <h2 class="trp-section__title">Trainer Profile</h2>
+        <button *ngIf="!isEditing()" type="button" class="trp-edit-btn" (click)="startEdit()">Edit</button>
+      </div>
+
+      <!-- View mode -->
+      <ng-container *ngIf="!isEditing()">
+        <div class="trp-field">
+          <span class="trp-field__label">Description</span>
+          <span class="trp-field__value">{{ extra().description || '—' }}</span>
+        </div>
+        <div class="trp-field">
+          <span class="trp-field__label">Specialties</span>
+          <span class="trp-field__value">{{ extra().specialties || '—' }}</span>
+        </div>
+        <div class="trp-field">
+          <span class="trp-field__label">Experience</span>
+          <span class="trp-field__value">{{ extra().years_experience != null ? extra().years_experience + ' yrs' : '—' }}</span>
+        </div>
+      </ng-container>
+
+      <!-- Edit mode -->
+      <form *ngIf="isEditing()" #profileForm="ngForm" class="trp-edit-form" (ngSubmit)="saveProfile(profileForm)">
+        <div class="trp-edit-form__field">
+          <label class="trp-edit-form__label" for="editDesc">Description</label>
+          <textarea
+            id="editDesc"
+            class="trp-edit-form__input trp-edit-form__textarea"
+            name="editDescription"
+            [ngModel]="editDescription()"
+            (ngModelChange)="editDescription.set($event)"
+          ></textarea>
+        </div>
+        <div class="trp-edit-form__field">
+          <label class="trp-edit-form__label" for="editSpec">Specialties</label>
+          <input
+            id="editSpec"
+            class="trp-edit-form__input"
+            type="text"
+            name="editSpecialties"
+            [ngModel]="editSpecialties()"
+            (ngModelChange)="editSpecialties.set($event)"
+          />
+        </div>
+        <div class="trp-edit-form__field">
+          <label class="trp-edit-form__label" for="editYears">Years of Experience</label>
+          <input
+            id="editYears"
+            class="trp-edit-form__input"
+            type="number"
+            name="editYearsExperience"
+            min="0"
+            [ngModel]="editYearsExperience()"
+            (ngModelChange)="editYearsExperience.set($event)"
+          />
+        </div>
+        <p *ngIf="saveError()" class="trp-edit-form__error">{{ saveError() }}</p>
+        <div class="trp-edit-form__actions">
+          <button type="submit" class="trp-save-btn" [disabled]="isSaving()">
+            {{ isSaving() ? 'Saving…' : 'Save' }}
+          </button>
+          <button type="button" class="trp-cancel-btn" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Logout -->
+    <div class="trp-logout">
+      <button class="trp-logout-btn" type="button" (click)="logout()">Log out</button>
+    </div>
+  </ng-container>
+</div>

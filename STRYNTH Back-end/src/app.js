@@ -15,7 +15,7 @@ const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const corsOptions = {
-  origin: "http://localhost:4200",
+  origin: ["http://localhost:4200", "http://localhost"],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
@@ -43,5 +43,6 @@ app.use("/payments", paymentRoutes);
 app.use("/api/v1/trainers", trainerRoutes);
 app.use("/api/v1/admin", adminRoutes);
 
+app.use(errorHandler);
 
 export default app;

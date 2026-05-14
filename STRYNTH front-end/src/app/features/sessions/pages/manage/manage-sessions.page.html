@@ -1,0 +1,195 @@
+<section class="manage-sessions-page">
+  <header class="manage-hero surface-card">
+    <p class="manage-hero__kicker">TRAINER</p>
+    <h1 class="manage-hero__title">Manage Sessions</h1>
+    <p class="manage-hero__subtitle">Create and track your training sessions.</p>
+  </header>
+
+  <!-- Create new session -->
+  <section class="manage-card surface-card">
+    <h2 class="manage-card__title">New Session</h2>
+
+    <form #createForm="ngForm" class="manage-form" novalidate (ngSubmit)="createSession(createForm)">
+      <div class="manage-form__row">
+        <label class="manage-field">
+          <span>Date &amp; Time</span>
+          <input
+            #sessionTimeRef="ngModel"
+            class="manage-input"
+            [ngClass]="{ 'manage-input--invalid': sessionTimeRef.invalid && sessionTimeRef.touched }"
+            type="datetime-local"
+            name="sessionTime"
+            required
+            [min]="minDateTime"
+            [ngModel]="newSessionTime()"
+            (ngModelChange)="newSessionTime.set($event)"
+          />
+        </label>
+
+        <label class="manage-field">
+          <span>Capacity</span>
+          <input
+            #capacityRef="ngModel"
+            class="manage-input"
+            [ngClass]="{ 'manage-input--invalid': capacityRef.invalid && capacityRef.touched }"
+            type="number"
+            name="capacity"
+            required
+            min="1"
+            [ngModel]="newCapacity()"
+            (ngModelChange)="newCapacity.set(+$event)"
+          />
+        </label>
+
+        <label class="manage-field">
+          <span>Price ($)</span>
+          <input
+            class="manage-input"
+            type="number"
+            name="price"
+            min="0"
+            step="0.01"
+            [ngModel]="newPrice()"
+            (ngModelChange)="newPrice.set(+$event)"
+          />
+        </label>
+      </div>
+
+      <p *ngIf="createError()" class="manage-state-error">{{ createError() }}</p>
+      <p *ngIf="createSuccess()" class="manage-state-success">{{ createSuccess() }}</p>
+
+      <ui-button type="submit" variant="primary" [disabled]="isCreating()">
+        {{ isCreating() ? 'Creating…' : 'Create Session' }}
+      </ui-button>
+    </form>
+  </section>
+
+  <!-- Sessions list -->
+  <section class="manage-card surface-card">
+    <h2 class="manage-card__title">Your Sessions</h2>
+
+    <p *ngIf="isLoading()" class="manage-state-msg">Loading sessions…</p>
+    <p *ngIf="!isLoading() && loadError()" class="manage-state-error">{{ loadError() }}</p>
+    <p *ngIf="deleteError()" class="manage-state-error">{{ deleteError() }}</p>
+    <p
+      *ngIf="!isLoading() && !loadError() && sessions().length === 0"
+      class="manage-state-msg"
+    >
+      No sessions yet. Create your first session above.
+    </p>
+
+    <ul *ngIf="sessions().length > 0" class="sessions-list">
+      <li *ngFor="let session of sessions()" class="session-row">
+
+        <!-- View mode -->
+        <ng-container *ngIf="editingId() !== session.id">
+          <div class="session-row__info">
+            <p class="session-row__time">
+              {{ session.session_time | date: 'EEE, MMM d, y · h:mm a' }}
+            </p>
+            <p class="session-row__meta">
+              {{ session.capacity }} spot{{ session.capacity === 1 ? '' : 's' }}
+              &nbsp;·&nbsp;
+              {{ session.price > 0 ? (session.price | currency:'USD':'symbol':'1.2-2') : 'Free' }}
+            </p>
+            <p class="session-row__bookings">
+              {{ session.bookings_count }} / {{ session.capacity }} booked
+              &nbsp;·&nbsp;
+              {{ session.capacity - session.bookings_count }} left
+            </p>
+            <ui-session-bookers
+              [bookers]="bookersBySession().get(session.id) ?? []"
+              [expanded]="expandedSessionId() === session.id"
+              (toggle)="toggleBookers(session.id)"
+            />
+          </div>
+
+          <div class="session-row__actions">
+            <ui-badge [label]="session.status" [tone]="statusTone(session.status)" />
+            <button
+              type="button"
+              class="session-row__edit"
+              (click)="startEdit(session)"
+            >Edit</button>
+            <button
+              type="button"
+              class="session-row__delete"
+              [disabled]="isDeletingId() === session.id || session.status !== 'available'"
+              [title]="session.status !== 'available' ? 'Cannot delete \u2014 this session has bookings.' : ''"
+              (click)="deleteSession(session.id)"
+            >
+              {{ isDeletingId() === session.id ? '…' : 'Delete' }}
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Edit mode -->
+        <ng-container *ngIf="editingId() === session.id">
+          <form #editForm="ngForm" class="session-edit-form" novalidate (ngSubmit)="saveEdit(editForm)">
+            <div class="manage-form__row">
+              <label class="manage-field">
+                <span>Date &amp; Time</span>
+                <input
+                  class="manage-input"
+                  type="datetime-local"
+                  name="editTime"
+                  required
+                  [ngModel]="editTime()"
+                  (ngModelChange)="editTime.set($event)"
+                />
+              </label>
+
+              <label class="manage-field">
+                <span>Capacity</span>
+                <input
+                  class="manage-input"
+                  type="number"
+                  name="editCapacity"
+                  required
+                  min="1"
+                  [ngModel]="editCapacity()"
+                  (ngModelChange)="editCapacity.set(+$event)"
+                />
+              </label>
+
+              <label class="manage-field">
+                <span>Status</span>
+                <select
+                  class="manage-input"
+                  name="editStatus"
+                  [ngModel]="editStatus()"
+                  (ngModelChange)="editStatus.set($event)"
+                >
+                  <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+                </select>
+              </label>
+
+              <label class="manage-field">
+                <span>Price ($)</span>
+                <input
+                  class="manage-input"
+                  type="number"
+                  name="editPrice"
+                  min="0"
+                  step="0.01"
+                  [ngModel]="editPrice()"
+                  (ngModelChange)="editPrice.set(+$event)"
+                />
+              </label>
+            </div>
+
+            <p *ngIf="saveError()" class="manage-state-error">{{ saveError() }}</p>
+
+            <div class="session-row__actions">
+              <ui-button type="submit" variant="primary" size="sm" [disabled]="isSaving()">
+                {{ isSaving() ? 'Saving…' : 'Save' }}
+              </ui-button>
+              <button type="button" class="session-row__delete" (click)="cancelEdit()">Cancel</button>
+            </div>
+          </form>
+        </ng-container>
+
+      </li>
+    </ul>
+  </section>
+</section>

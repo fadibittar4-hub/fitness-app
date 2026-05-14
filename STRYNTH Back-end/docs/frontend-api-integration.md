@@ -328,7 +328,8 @@ Sessions are created and managed by trainers. Trainees browse available sessions
       "status": "available",
       "capacity": 5,
       "price": 49.99,
-      "created_at": "2026-04-06T11:00:00.000Z"
+      "created_at": "2026-04-06T11:00:00.000Z",
+      "bookings_count": 3
     }
   ]
 }
@@ -354,11 +355,14 @@ Sessions are created and managed by trainers. Trainees browse available sessions
       "status": "available",
       "capacity": 5,
       "price": 49.99,
-      "created_at": "2026-04-06T11:00:00.000Z"
+      "created_at": "2026-04-06T11:00:00.000Z",
+      "bookings_count": 2
     }
   ]
 }
 ```
+
+> `bookings_count` is the number of confirmed bookings for that session. Use it alongside `capacity` to show how many spots are filled (e.g. `2 / 5`).
 
 ---
 
@@ -390,7 +394,8 @@ Sessions are created and managed by trainers. Trainees browse available sessions
     "status": "available",
     "capacity": 5,
     "price": 49.99,
-    "created_at": "2026-04-06T11:00:00.000Z"
+    "created_at": "2026-04-06T11:00:00.000Z",
+    "bookings_count": 0
   }
 }
 ```
@@ -465,7 +470,7 @@ Sessions are created and managed by trainers. Trainees browse available sessions
 - `session_id` must reference an existing `available` session
 - The session must not have already started
 - You cannot book the same session twice
-- `amount` must be a positive number
+- `amount` must be a non-negative number (`0` is valid for free sessions)
 - `payment_method`: use `fail`, `failed`, `declined`, or `mock_fail` to simulate a declined payment (returns `402`)
 
 **Success response**
@@ -690,7 +695,8 @@ DELETE /api/v1/bookings/1
       "status": "booked",
       "capacity": 5,
       "price": 49.99,
-      "created_at": "2026-04-06T11:00:00.000Z"
+      "created_at": "2026-04-06T11:00:00.000Z",
+      "bookings_count": 5
     }
   ]
 }

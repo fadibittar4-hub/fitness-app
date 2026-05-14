@@ -1,0 +1,394 @@
+:host {
+  display: block;
+}
+
+// ─── Page shell ──────────────────────────────────────────────────────────────
+.payment-page {
+  display: grid;
+  gap: var(--space-5);
+  padding-bottom: calc(var(--bottom-nav-height) + 5rem);
+}
+
+// ─── Back button ─────────────────────────────────────────────────────────────
+.payment-back {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  align-self: start;
+  justify-self: start;
+  margin-top: var(--space-3);
+  letter-spacing: 0.01em;
+
+  &:hover { text-decoration: underline; }
+}
+
+// ─── Hero header ─────────────────────────────────────────────────────────────
+.payment-hero {
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5) var(--space-4);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.payment-hero__kicker {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.payment-hero__title {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 7vw, 2.1rem);
+  line-height: var(--line-tight);
+}
+
+.payment-hero__subtitle {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.payment-hero__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+// ─── Two-column layout ───────────────────────────────────────────────────────
+.payment-layout {
+  display: grid;
+  gap: var(--space-4);
+}
+
+// ─── Cards ───────────────────────────────────────────────────────────────────
+// border-radius is provided by the global .surface-card class on these elements
+.payment-card {
+  padding: var(--space-5) var(--space-4);
+  display: grid;
+  gap: var(--space-4);
+}
+
+// ─── Section header row ──────────────────────────────────────────────────────
+.payment-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.payment-section-head__eyebrow {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.payment-card__title {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: var(--line-tight);
+}
+
+.payment-total-inline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--color-primary);
+  font-weight: 700;
+  white-space: nowrap;
+  align-self: center;
+}
+
+.payment-form-note {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  align-self: center;
+}
+
+// ─── Trainer mini ─────────────────────────────────────────────────────────────
+.trainer-mini {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-white-2);
+  border: 1px solid var(--color-border);
+}
+
+.trainer-mini--featured {
+  border-color: var(--color-border-accent);
+  background: linear-gradient(135deg, var(--color-accent-ghost), transparent);
+}
+
+.trainer-mini__image {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid var(--color-border-accent);
+  box-shadow: var(--shadow-glow);
+  flex-shrink: 0;
+}
+
+.trainer-mini__name,
+.trainer-mini__specialty {
+  margin: 0;
+}
+
+.trainer-mini__name {
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.trainer-mini__specialty {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+// ─── Booking overview ─────────────────────────────────────────────────────────
+.booking-overview {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.booking-overview__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.booking-overview__item--price {
+  background: linear-gradient(135deg, var(--color-primary-ghost), var(--color-accent-ghost));
+  border-top: 1px solid var(--color-border-accent);
+  border-bottom: none;
+}
+
+.booking-overview__label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.booking-overview__value {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: right;
+}
+
+.booking-overview__item--price .booking-overview__value {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+}
+
+// ─── Payment form ─────────────────────────────────────────────────────────────
+.payment-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.payment-form__split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+// ─── Form fields ─────────────────────────────────────────────────────────────
+.payment-field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.payment-field__label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.payment-field__control {
+  width: 100%;
+  height: 3rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-white-3);
+  padding: 0 var(--space-3);
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  line-height: 1;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  outline: none;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.55;
+  }
+
+  &:hover {
+    border-color: var(--color-border-accent);
+    background: var(--color-white-4);
+  }
+
+  &:focus {
+    border-color: var(--color-border-accent);
+    background: var(--color-white-4);
+    box-shadow: 0 0 0 3px var(--color-primary-ghost), var(--shadow-glow);
+  }
+
+  &--mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    font-size: var(--text-sm);
+  }
+
+  &--invalid {
+    border-color: var(--color-danger-border) !important;
+    background: var(--color-danger-soft) !important;
+    box-shadow: 0 0 0 3px var(--color-danger-focus) !important;
+  }
+}
+
+.payment-field__error {
+  font-size: var(--text-xs);
+  color: var(--color-danger-text);
+  padding-left: var(--space-1);
+}
+
+// ─── Status messages ──────────────────────────────────────────────────────────
+%alert-base {
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.payment-state-stack {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.payment-success {
+  @extend %alert-base;
+  border: 1px solid var(--color-border-accent);
+  color: var(--color-success-bright);
+  background: var(--color-success-wash);
+}
+
+.payment-error {
+  @extend %alert-base;
+  border: 1px solid var(--color-danger-border);
+  color: var(--color-danger-text);
+  background: var(--color-danger-soft);
+}
+
+// ─── Total card ───────────────────────────────────────────────────────────────
+.payment-total-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-accent);
+  background: linear-gradient(135deg, var(--color-primary-ghost), var(--color-accent-ghost));
+}
+
+.payment-total-card__label {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.payment-total-card__value {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--color-primary);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.payment-total-card__hint {
+  margin: 0;
+  flex-shrink: 0;
+  max-width: 9rem;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: right;
+  line-height: 1.5;
+}
+
+// ─── CTA wrap ─────────────────────────────────────────────────────────────────
+.payment-cta-wrap {
+  position: fixed;
+  left: max(var(--space-4), env(safe-area-inset-left));
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: calc(var(--bottom-nav-height) + var(--space-3) + env(safe-area-inset-bottom));
+  z-index: 12;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-cta);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+@media (min-width: 48rem) {
+  .payment-page {
+    gap: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+
+  .payment-layout {
+    grid-template-columns: 1fr 1.4fr;
+    align-items: start;
+    gap: var(--space-5);
+  }
+
+  .payment-card {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .payment-cta-wrap {
+    position: static;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+}

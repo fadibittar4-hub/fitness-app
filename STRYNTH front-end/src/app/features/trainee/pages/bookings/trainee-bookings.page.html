@@ -1,0 +1,63 @@
+<section class="bookings-page">
+  <header class="bk-hero">
+    <p class="bk-hero__kicker">Your sessions</p>
+    <h1 class="bk-hero__title">My Bookings</h1>
+    <p class="bk-hero__sub">All your confirmed training sessions in one place.</p>
+  </header>
+
+  <!-- Success banner after payment -->
+  <div *ngIf="justPaid()" class="bk-success-banner">
+    <div class="bk-success-banner__body">
+      <span class="bk-success-banner__icon">✓</span>
+      <div>
+        <p class="bk-success-banner__title">Payment confirmed!</p>
+        <p class="bk-success-banner__sub">Your session has been booked and payment received.</p>
+      </div>
+    </div>
+    <button class="bk-success-banner__dismiss" (click)="dismissBanner()" aria-label="Dismiss">×</button>
+  </div>
+
+  <p *ngIf="isLoading()" class="bk-state">Loading your bookings…</p>
+  <p *ngIf="loadError()" class="bk-error">{{ loadError() }}</p>
+
+  <ng-container *ngIf="!isLoading() && !loadError()">
+    <p *ngIf="bookings().length === 0" class="bk-empty">
+      You have no bookings yet.
+      <button class="bk-empty__cta" (click)="goHome()">Browse trainers</button>
+    </p>
+
+    <ul class="bk-list" *ngIf="bookings().length > 0">
+      <li *ngFor="let booking of bookings()" class="bk-card surface-card">
+        <div class="bk-card__header">
+          <div class="bk-card__avatar">
+            {{ booking.session?.trainer_first_name?.[0] ?? '?' }}{{ booking.session?.trainer_last_name?.[0] ?? '' }}
+          </div>
+          <div class="bk-card__meta">
+            <p class="bk-card__trainer">
+              {{ booking.session?.trainer_first_name }} {{ booking.session?.trainer_last_name }}
+            </p>
+            <p class="bk-card__label">Personal Trainer</p>
+          </div>
+          <span class="bk-card__badge bk-card__badge--{{ booking.status }}">{{ booking.status }}</span>
+        </div>
+
+        <div class="bk-card__details">
+          <div class="bk-card__row">
+            <span class="bk-card__row-label">Date &amp; Time</span>
+            <strong class="bk-card__row-value">
+              {{ booking.session?.session_time | date: 'EEE, MMM d, y · h:mm a' }}
+            </strong>
+          </div>
+          <div class="bk-card__row">
+            <span class="bk-card__row-label">Booking ID</span>
+            <strong class="bk-card__row-value">#{{ booking.id }}</strong>
+          </div>
+          <div class="bk-card__row">
+            <span class="bk-card__row-label">Booked on</span>
+            <strong class="bk-card__row-value">{{ booking.created_at | date: 'MMM d, y' }}</strong>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </ng-container>
+</section>

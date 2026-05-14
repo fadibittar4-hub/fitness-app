@@ -1,0 +1,159 @@
+<section class="payment-page">
+  <button class="payment-back" (click)="goBack()">← Back</button>
+
+  <header class="payment-hero panel-glass">
+    <div class="payment-hero__copy">
+      <p class="payment-hero__kicker">Secure Checkout</p>
+      <h1 class="payment-hero__title">Complete your payment</h1>
+      <p class="payment-hero__subtitle">
+        Review your session and enter card details to confirm the booking.
+      </p>
+    </div>
+    <div class="payment-hero__meta">
+      <ui-badge label="Card only" tone="neutral"></ui-badge>
+      <ui-badge label="256-bit SSL" tone="success"></ui-badge>
+    </div>
+  </header>
+
+  <section class="payment-layout">
+    <section class="surface-card payment-card payment-card--summary">
+      <div class="payment-section-head">
+        <div>
+          <p class="payment-section-head__eyebrow">Selected trainer</p>
+          <h2 class="payment-card__title">Session details</h2>
+        </div>
+        <p class="payment-total-inline">{{ total() | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+      </div>
+
+      <article class="trainer-mini trainer-mini--featured">
+        <img [src]="trainer().imageUrl" [alt]="trainer().name" class="trainer-mini__image" />
+        <div class="trainer-mini__body">
+          <p class="trainer-mini__name">{{ trainer().name }}</p>
+          <p class="trainer-mini__specialty">{{ trainer().specialty }}</p>
+        </div>
+      </article>
+
+      <div class="booking-overview">
+        <div class="booking-overview__item">
+          <span class="booking-overview__label">Session</span>
+          <strong class="booking-overview__value">{{ booking().sessionName }}</strong>
+        </div>
+        <div class="booking-overview__item">
+          <span class="booking-overview__label">Date</span>
+          <strong class="booking-overview__value">{{ booking().date }}</strong>
+        </div>
+        <div class="booking-overview__item">
+          <span class="booking-overview__label">Time</span>
+          <strong class="booking-overview__value">{{ booking().time }}</strong>
+        </div>
+        <div class="booking-overview__item booking-overview__item--price">
+          <span class="booking-overview__label">Total price</span>
+          <strong class="booking-overview__value">{{ booking().price | currency: 'USD' : 'symbol' : '1.2-2' }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="surface-card payment-card payment-card--form">
+      <div class="payment-section-head">
+        <div>
+          <p class="payment-section-head__eyebrow">Payment details</p>
+          <h2 class="payment-card__title">Card information</h2>
+        </div>
+        <p class="payment-form-note">256-bit SSL encrypted</p>
+      </div>
+
+      <form class="payment-form" [formGroup]="paymentForm" (ngSubmit)="payNow()" novalidate>
+        <label class="payment-field">
+          <span class="payment-field__label">Cardholder name</span>
+          <input
+            id="cardholderName"
+            class="payment-field__control"
+            type="text"
+            inputmode="text"
+            autocomplete="cc-name"
+            placeholder="Jordan Lee"
+            formControlName="cardholderName"
+            [ngClass]="{ 'payment-field__control--invalid': fieldError('cardholderName') }"
+            (input)="onCardholderInput(($any($event.target)).value)"
+          />
+          <span *ngIf="fieldError('cardholderName')" class="payment-field__error">{{ fieldError('cardholderName') }}</span>
+        </label>
+
+        <label class="payment-field">
+          <span class="payment-field__label">Card number</span>
+          <input
+            id="cardNumber"
+            class="payment-field__control payment-field__control--mono"
+            type="text"
+            inputmode="numeric"
+            autocomplete="cc-number"
+            placeholder="4242 4242 4242 4242"
+            formControlName="cardNumber"
+            [ngClass]="{ 'payment-field__control--invalid': fieldError('cardNumber') }"
+            (input)="formatCardNumber(($any($event.target)).value)"
+          />
+          <span *ngIf="fieldError('cardNumber')" class="payment-field__error">{{ fieldError('cardNumber') }}</span>
+        </label>
+
+        <div class="payment-form__split">
+          <label class="payment-field">
+            <span class="payment-field__label">Expiry date</span>
+            <input
+              id="expiryDate"
+              class="payment-field__control payment-field__control--mono"
+              type="text"
+              inputmode="numeric"
+              autocomplete="cc-exp"
+              placeholder="08/28"
+              formControlName="expiryDate"
+              [ngClass]="{ 'payment-field__control--invalid': fieldError('expiryDate') }"
+              (input)="formatExpiryDate(($any($event.target)).value)"
+            />
+            <span *ngIf="fieldError('expiryDate')" class="payment-field__error">{{ fieldError('expiryDate') }}</span>
+          </label>
+
+          <label class="payment-field">
+            <span class="payment-field__label">CVV</span>
+            <input
+              id="cvv"
+              class="payment-field__control payment-field__control--mono"
+              type="password"
+              inputmode="numeric"
+              autocomplete="cc-csc"
+              placeholder="123"
+              formControlName="cvv"
+              [ngClass]="{ 'payment-field__control--invalid': fieldError('cvv') }"
+              (input)="formatCvv(($any($event.target)).value)"
+            />
+            <span *ngIf="fieldError('cvv')" class="payment-field__error">{{ fieldError('cvv') }}</span>
+          </label>
+        </div>
+
+        <div class="payment-state-stack">
+          <p *ngIf="errorMessage()" class="payment-error">{{ errorMessage() }}</p>
+        </div>
+
+        <div class="payment-total-card">
+          <div>
+            <p class="payment-total-card__label">Total due today</p>
+            <p class="payment-total-card__value">{{ total() | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+          <p class="payment-total-card__hint">Your session will be confirmed after payment processing.</p>
+        </div>
+
+        <div class="payment-cta-wrap">
+          <ui-button
+            type="submit"
+            variant="primary"
+            size="lg"
+            [fullWidth]="true"
+            [disabled]="isProcessing()"
+          >
+            {{ isProcessing() ? 'Processing payment...' : 'Pay Now' }}
+          </ui-button>
+        </div>
+      </form>
+    </section>
+  </section>
+
+</section>

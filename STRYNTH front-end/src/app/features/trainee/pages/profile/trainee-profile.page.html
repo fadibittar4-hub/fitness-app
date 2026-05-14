@@ -1,0 +1,26 @@
+<div class="tp-page">
+  <ng-container *ngIf="authService.currentUser() as user">
+    <!-- Hero -->
+    <div class="tp-hero panel-glass">
+      <ui-avatar-upload
+        [imageUrl]="user.profile_image_url"
+        [initials]="user.first_name[0] + user.last_name[0]"
+      />
+      <div class="tp-hero__info">
+        <h1 class="tp-hero__name">{{ user.first_name }} {{ user.last_name }}</h1>
+        <p class="tp-hero__email">{{ user.email }}</p>
+        <p class="tp-hero__role">{{ user.role }}</p>
+      </div>
+    </div>
+
+    <!-- Bookings -->
+    <section class="tp-section panel-glass">
+      <a class="tp-bookings-link" routerLink="/trainee/bookings">My Bookings</a>
+    </section>
+
+    <!-- Logout -->
+    <div class="tp-logout">
+      <button class="tp-logout-btn" type="button" (click)="logout()">Log out</button>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,206 @@
+<div class="ah-page">
+  <h1 class="ah-title">Dashboard</h1>
+
+  <p *ngIf="isLoading()" class="ah-state">Loading stats…</p>
+  <p *ngIf="error()" class="ah-error">{{ error() }}</p>
+
+  <div *ngIf="stats() as s" class="ah-grid">
+    <div class="ah-stat panel-glass" [class.ah-stat--active]="activePanel() === 'trainees'" (click)="selectPanel('trainees')">
+      <p class="ah-stat__value">{{ s.total_users }}</p>
+      <p class="ah-stat__label">Trainees</p>
+    </div>
+    <div class="ah-stat panel-glass" [class.ah-stat--active]="activePanel() === 'trainers'" (click)="selectPanel('trainers')">
+      <p class="ah-stat__value">{{ s.total_trainers }}</p>
+      <p class="ah-stat__label">Trainers</p>
+    </div>
+    <div class="ah-stat panel-glass" [class.ah-stat--active]="activePanel() === 'sessions'" (click)="selectPanel('sessions')">
+      <p class="ah-stat__value">{{ s.total_sessions }}</p>
+      <p class="ah-stat__label">Total Sessions</p>
+    </div>
+    <div class="ah-stat panel-glass" [class.ah-stat--active]="activePanel() === 'available_sessions'" (click)="selectPanel('available_sessions')">
+      <p class="ah-stat__value">{{ s.available_sessions }}</p>
+      <p class="ah-stat__label">Available Sessions</p>
+    </div>
+    <div class="ah-stat panel-glass" [class.ah-stat--active]="activePanel() === 'completed_sessions'" (click)="selectPanel('completed_sessions')">
+      <p class="ah-stat__value">{{ s.completed_sessions }}</p>
+      <p class="ah-stat__label">Completed Sessions</p>
+    </div>
+    <div class="ah-stat panel-glass" [class.ah-stat--active]="activePanel() === 'bookings'" (click)="selectPanel('bookings')">
+      <p class="ah-stat__value">{{ s.total_bookings }}</p>
+      <p class="ah-stat__label">Total Bookings</p>
+    </div>
+    <div class="ah-stat panel-glass" [class.ah-stat--active]="activePanel() === 'confirmed_bookings'" (click)="selectPanel('confirmed_bookings')">
+      <p class="ah-stat__value">{{ s.confirmed_bookings }}</p>
+      <p class="ah-stat__label">Confirmed Bookings</p>
+    </div>
+  </div>
+
+  <div *ngIf="activePanel()" class="ah-panel panel-glass">
+    <div class="ah-panel__header">
+      <h2 class="ah-panel__title">{{ panelTitle() }}</h2>
+      <button class="ah-btn ah-btn--ghost" (click)="closePanel()">&#x2715;</button>
+    </div>
+
+    <div class="ah-panel__body">
+
+      <!-- ── Users (trainees / trainers) ── -->
+      <ng-container *ngIf="isUserPanel()">
+        <p *ngIf="panelUsers().length === 0" class="ah-state">No records found.</p>
+        <table *ngIf="panelUsers().length > 0" class="ah-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of panelUsers()">
+              <!-- View row -->
+              <ng-container *ngIf="editingUserId() !== u.id">
+                <td>{{ u.first_name }} {{ u.last_name }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.created_at | date:'mediumDate' }}</td>
+                <td class="ah-actions">
+                  <button class="ah-btn ah-btn--ghost" (click)="startEditUser(u)">Edit</button>
+                </td>
+              </ng-container>
+              <!-- Edit row -->
+              <td *ngIf="editingUserId() === u.id" colspan="4" class="ah-edit-cell">
+                <div class="ah-edit-form">
+                  <div class="ah-edit-form__fields">
+                    <label class="ah-edit-form__field">
+                      <span>First Name</span>
+                      <input type="text" [value]="editFirstName()" (input)="editFirstName.set($any($event.target).value)" />
+                    </label>
+                    <label class="ah-edit-form__field">
+                      <span>Last Name</span>
+                      <input type="text" [value]="editLastName()" (input)="editLastName.set($any($event.target).value)" />
+                    </label>
+                    <label class="ah-edit-form__field">
+                      <span>Email</span>
+                      <input type="email" [value]="editEmail()" (input)="editEmail.set($any($event.target).value)" />
+                    </label>
+                    <label class="ah-edit-form__field">
+                      <span>Role</span>
+                      <select (change)="editRole.set($any($event.target).value)">
+                        <option *ngFor="let r of userRoleOptions" [value]="r" [selected]="r === editRole()">{{ r }}</option>
+                      </select>
+                    </label>
+                  </div>
+                  <p *ngIf="userSaveError()" class="ah-edit-error">{{ userSaveError() }}</p>
+                  <div class="ah-edit-form__actions">
+                    <button class="ah-btn ah-btn--primary" (click)="saveEditUser()" [disabled]="isSavingUser()">
+                      {{ isSavingUser() ? 'Saving…' : 'Save' }}
+                    </button>
+                    <button class="ah-btn ah-btn--ghost" (click)="cancelEditUser()" [disabled]="isSavingUser()">Cancel</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+
+      <!-- ── Sessions ── -->
+      <ng-container *ngIf="isSessionPanel()">
+        <p *ngIf="panelSessions().length === 0" class="ah-state">No records found.</p>
+        <table *ngIf="panelSessions().length > 0" class="ah-table">
+          <thead>
+            <tr>
+              <th>Trainer</th>
+              <th>Date &amp; Time</th>
+              <th>Status</th>
+              <th>Capacity</th>
+              <th>Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sess of panelSessions()">
+              <!-- View row -->
+              <ng-container *ngIf="editingSessionId() !== sess.id">
+                <td>{{ sess.trainer_first_name }} {{ sess.trainer_last_name }}</td>
+                <td>{{ sess.session_time | date:'medium' }}</td>
+                <td><span class="ah-badge ah-badge--{{ sess.status }}">{{ sess.status }}</span></td>
+                <td>{{ sess.capacity }}</td>
+                <td>{{ sess.price > 0 ? (sess.price | currency:'USD':'symbol':'1.2-2') : 'Free' }}</td>
+                <td class="ah-actions">
+                  <button class="ah-btn ah-btn--ghost" (click)="startEditSession(sess)" [disabled]="deletingSessionId() === sess.id">Edit</button>
+                  <!-- Delete: normal → confirm → deleting -->
+                  <ng-container *ngIf="confirmDeleteSessionId() !== sess.id">
+                    <button class="ah-btn ah-btn--danger" (click)="requestDeleteSession(sess.id)" [disabled]="deletingSessionId() === sess.id">
+                      {{ deletingSessionId() === sess.id ? 'Deleting…' : 'Delete' }}
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="confirmDeleteSessionId() === sess.id">
+                    <span class="ah-confirm-text">Sure?</span>
+                    <button class="ah-btn ah-btn--danger" (click)="confirmDeleteSession(sess.id)">Yes</button>
+                    <button class="ah-btn ah-btn--ghost" (click)="cancelDeleteSession()">No</button>
+                  </ng-container>
+                </td>
+              </ng-container>
+              <!-- Edit row -->
+              <td *ngIf="editingSessionId() === sess.id" colspan="6" class="ah-edit-cell">
+                <div class="ah-edit-form">
+                  <div class="ah-edit-form__fields">
+                    <label class="ah-edit-form__field">
+                      <span>Date &amp; Time</span>
+                      <input type="datetime-local" [value]="editSessionTime()" (input)="editSessionTime.set($any($event.target).value)" />
+                    </label>
+                    <label class="ah-edit-form__field">
+                      <span>Capacity</span>
+                      <input type="number" min="1" [value]="editSessionCapacity()" (input)="editSessionCapacity.set(+$any($event.target).value)" />
+                    </label>
+                    <label class="ah-edit-form__field">
+                      <span>Status</span>
+                      <select (change)="editSessionStatus.set($any($event.target).value)">
+                        <option *ngFor="let st of sessionStatusOptions" [value]="st" [selected]="st === editSessionStatus()">{{ st }}</option>
+                      </select>
+                    </label>
+                    <label class="ah-edit-form__field">
+                      <span>Price ($)</span>
+                      <input type="number" min="0" step="0.01" [value]="editSessionPrice()" (input)="editSessionPrice.set(+$any($event.target).value)" />
+                    </label>
+                  </div>
+                  <p *ngIf="sessionSaveError()" class="ah-edit-error">{{ sessionSaveError() }}</p>
+                  <div class="ah-edit-form__actions">
+                    <button class="ah-btn ah-btn--primary" (click)="saveEditSession()" [disabled]="isSavingSession()">
+                      {{ isSavingSession() ? 'Saving…' : 'Save' }}
+                    </button>
+                    <button class="ah-btn ah-btn--ghost" (click)="cancelEditSession()" [disabled]="isSavingSession()">Cancel</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+
+      <!-- ── Bookings ── -->
+      <ng-container *ngIf="isBookingPanel()">
+        <p *ngIf="panelBookings().length === 0" class="ah-state">No records found.</p>
+        <table *ngIf="panelBookings().length > 0" class="ah-table">
+          <thead>
+            <tr>
+              <th>Trainee</th>
+              <th>Trainer</th>
+              <th>Session Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let b of panelBookings()">
+              <td>{{ b.user_first_name }} {{ b.user_last_name }}</td>
+              <td>{{ b.session.trainer_first_name }} {{ b.session.trainer_last_name }}</td>
+              <td>{{ b.session.session_time | date:'medium' }}</td>
+              <td><span class="ah-badge ah-badge--{{ b.status }}">{{ b.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+
+    </div>
+  </div>
+</div>

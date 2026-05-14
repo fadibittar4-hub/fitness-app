@@ -18,8 +18,8 @@ const validateBookAndPayPayload = (payload) => {
   const numericAmount = Number(amount);
   const paymentMethod = String(payment_method || "").trim();
 
-  if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
-    throw buildError("amount must be a positive number");
+  if (!Number.isFinite(numericAmount) || numericAmount < 0) {
+    throw buildError("amount must be a non-negative number");
   }
 
   if (!paymentMethod) {

@@ -1,0 +1,6 @@
+<div class="rating-stars" aria-label="Rating">
+  <span *ngFor="let filled of stars" class="rating-stars__star" [class.rating-stars__star--filled]="filled">
+    ★
+  </span>
+  <span class="rating-stars__value">{{ rating | number: '1.1-1' }}</span>
+</div>

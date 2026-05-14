@@ -1,0 +1,73 @@
+<div class="th-page">
+  <!-- Greeting -->
+  <div class="th-greeting">
+    <h1 class="th-greeting__text">
+      Hey, {{ authService.currentUser()?.first_name }} 👋
+    </h1>
+    <p class="th-greeting__sub">Here's your dashboard overview.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="th-stats">
+    <div class="th-stat panel-glass">
+      <p class="th-stat__value">{{ totalBookings() }}</p>
+      <p class="th-stat__label">Total Bookings</p>
+    </div>
+    <div class="th-stat panel-glass">
+      <p class="th-stat__value">{{ upcomingBookings().length }}</p>
+      <p class="th-stat__label">Upcoming</p>
+    </div>
+    <div class="th-stat panel-glass">
+      <p class="th-stat__value">{{ upcomingSessions().length }}</p>
+      <p class="th-stat__label">Open Sessions</p>
+    </div>
+  </div>
+
+  <!-- Upcoming bookings -->
+  <section class="th-section panel-glass">
+    <h2 class="th-section__title">Recent Bookings</h2>
+
+    <p *ngIf="isLoading()" class="th-state">Loading…</p>
+
+    <p *ngIf="!isLoading() && bookings().length === 0" class="th-state">
+      No bookings yet.
+    </p>
+
+    <ul *ngIf="!isLoading() && bookings().length > 0" class="th-list">
+      <li *ngFor="let b of bookings()" class="th-item">
+        <div class="th-item__main">
+          <p class="th-item__name">{{ b.user_first_name }} {{ b.user_last_name }}</p>
+          <p class="th-item__time">{{ b.session.session_time | date: 'medium' }}</p>
+        </div>
+        <span class="th-badge" [class]="'th-badge--' + b.status">{{ b.status }}</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Open sessions -->
+  <section class="th-section panel-glass">
+    <h2 class="th-section__title">Your Open Sessions</h2>
+
+    <p *ngIf="upcomingSessions().length === 0" class="th-state">
+      No open sessions. Go to Create to add one.
+    </p>
+
+    <ul *ngIf="upcomingSessions().length > 0" class="th-list">
+      <li *ngFor="let s of upcomingSessions()" class="th-item">
+        <div class="th-item__main">
+          <p class="th-item__name">{{ s.session_time | date: 'medium' }}</p>
+          <p class="th-item__time">{{ s.capacity }} spots</p>
+          <p class="th-item__bookings">
+            {{ s.bookings_count }} / {{ s.capacity }} booked &nbsp;·&nbsp; {{ s.capacity - s.bookings_count }} left
+          </p>
+          <ui-session-bookers
+            [bookers]="bookersBySession().get(s.id) ?? []"
+            [expanded]="expandedSessionId() === s.id"
+            (toggle)="toggleBookers(s.id)"
+          />
+        </div>
+        <span class="th-badge th-badge--available">available</span>
+      </li>
+    </ul>
+  </section>
+</div>
